@@ -1,3 +1,46 @@
+const apiKey = "a67204d2c2a048e9b6590d72e76ff86b";
 
-// 34
-const apiKey = 'a67204d2c2a048e9b6590d72e76ff86b';
+const blogContainer = document.getElementById("blog-container");
+
+async function fetchRandomNews() {
+  try {
+    const apiUrl = `https://newsapi.org/v2/top-headlines?country=us&pageSize=10&apiKey=${apiKey}`;
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+    return data.articles;
+  }
+   catch (error) {
+    console.error("Error fetching random", error);
+    return [];
+  }
+}
+
+function displayBlogs(articles) {
+  blogContainer.innerHTML = "";
+
+  articles.forEach((article) => {
+    const blogCard = document.createElement("div");
+    blogCard.classList.add("card-blog");
+    const img = document.createElement("img");
+    img.src = article.urlToImage; // Fixing typo here
+    const title = document.createElement("h2");
+    title.textContent = article.title;
+    const description = document.createElement("p");
+    description.textContent = article.description;
+
+    blogCard.appendChild(img);
+    blogCard.appendChild(title);
+    blogCard.appendChild(description);
+    blogContainer.appendChild(blogCard);
+  });
+}
+
+(async () => { // Fixing async IIFE syntax
+  try {
+    const articles = await fetchRandomNews();
+    displayBlogs(articles);
+  }
+   catch (error) {
+    console.error("Error fetching random", error);
+  }
+})();
